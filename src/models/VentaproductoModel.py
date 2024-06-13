@@ -9,6 +9,28 @@ from utils.DateFormat import DateFormat
 
 class VentaproductoModel():
 
+
+
+
+
+#API metodo GET , devuelve una lista con todas las ventas hehas por un usuario   
+    @classmethod
+    def get_usuarioventas(self, id):
+        try:
+            connection=get_connection()
+            ventas_de_usuario=[]
+
+            with connection.cursor() as cursor:
+                cursor.execute("SELECT id, fecha, total_pagar, usuario_id FROM ventaproducto WHERE ventaproducto.usuario_id = %s", (id,))
+                resultset=cursor.fetchall()
+
+                for row in resultset:
+                    ventaproducto=Ventaproducto(row[0],row[1],row[2],row[3])
+                    ventas_de_usuario.append(ventaproducto.to_JSON())
+            connection.close()
+            return ventas_de_usuario
+        except Exception as ex:
+            raise Exception(ex)
 #---------------------------------------------------------------------------------------------------------------------------    
 #API metodo GET , devuelve una lista con todas las ventas de productos    
     @classmethod
@@ -65,6 +87,47 @@ class VentaproductoModel():
             except Exception as ex:
                 raise Exception(ex) 
 #----------------------------------------------------------------------------------------------------------------------------
+#API metodo GET , devuelve una lista con todas las ventas de productos    
+    @classmethod
+    def get_allventaproductos(self):
+        try:
+            connection=get_connection()
+            
+            dataventaproducto=[]
+
+            with connection.cursor() as cursor:
+                cursor.execute("SELECT id, fecha, total_pagar FROM ventaproducto")
+                ventaproductos = cursor.fetchall()
+
+                for row in ventaproductos:
+                 
+                     cursor.execute("SELECT producto.nombre ,detallenotaventa.cantidad, detallenotaventa.sub_total FROM detallenotaventa JOIN producto ON detallenotaventa.producto_id=producto.id  WHERE ventaproducto_id=%s", (row[0],))
+                     detallenotaventas = cursor.fetchall()
+
+                     productos=[]
+                     for detalle in detallenotaventas:
+                            
+                            productos.append(
+                                {
+                                    "nombre": detalle[0],
+                                    "cantidad": detalle[1], 
+                                    "sub_total": detalle[2],
+                                }
+                            )
+   
+                     dataventaproducto.append(
+                        {
+                            "fecha": DateFormat.convert_date(row[1]),
+                            "total_pagar": row[2],
+                            "productos": productos 
+                        }
+                   )
+            connection.close()
+            return dataventaproducto
+        except Exception as ex:
+            raise Exception(ex)
+        
+#-----------------------------------------------------------------------------------------------------------------------            
    
 
     
