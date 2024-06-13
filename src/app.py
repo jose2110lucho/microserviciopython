@@ -1,12 +1,14 @@
 from flask import Flask
 
 from config import config
-
+from flask_cors import CORS
 #Routes
 from routes import Ventacombustible
 from routes import Ventaproducto
 
 app=Flask(__name__)
+CORS(app, origins="*")
+#app.config['CORS_HEADERS'] = 'Content-Type'
 
 def page_not_found(error):
     return "<h1>Not found page</h1>", 404
