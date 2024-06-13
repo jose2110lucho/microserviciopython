@@ -16,6 +16,15 @@ def get_ventacombustibles():
         return jsonify(ventacombustibles)
     except Exception as ex:
         return jsonify({'message':str(ex)}),500
+    
+#-----------------------------------------------------------------------------
+@main.route('/<id>')
+def get_usuarioventacombustibles(id):
+    try:
+        ventacombustibles=VentacombustibleModel.get_usuarioventacombustibles(id)
+        return jsonify(ventacombustibles)
+    except Exception as ex:
+        return jsonify({'message':str(ex)}),500
 #------ruta para metodo POST ventacombustible-----------------------------------------------------------------------------
 @main.route('/add', methods=['POST'])
 def add_ventacombustibles():
