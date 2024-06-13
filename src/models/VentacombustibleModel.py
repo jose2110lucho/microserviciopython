@@ -22,7 +22,26 @@ class VentacombustibleModel():
             return ventacombustibles
         except Exception as ex:
             raise Exception(ex)
-        
+
+#-----------------------------------------------------------------------------------------------------
+    @classmethod
+    def get_usuarioventacombustibles(self,id):
+            try:
+                connection=get_connection()
+                lista_ventas_combustible_usuario=[]
+
+                with connection.cursor() as cursor:
+                    cursor.execute("SELECT id, fecha, precio, cantidad, usuario_id FROM ventacombustible WHERE ventacombustible.usuario_id =  %s", (id,))
+                    resultset=cursor.fetchall()
+
+                    for row in resultset:
+                        usuarioventacombustible=Ventacombustible(row[0],row[1],row[2],row[3],row[4],)
+                        lista_ventas_combustible_usuario.append(usuarioventacombustible.to_JSON())
+                connection.close()
+                return lista_ventas_combustible_usuario
+            except Exception as ex:
+                raise Exception(ex)
+
 #----------------------------------------------------------------------------------------------------------------------------
     @classmethod
     def add_ventacombustibles(self, ventacombustible):
