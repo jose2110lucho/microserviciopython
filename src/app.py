@@ -20,6 +20,7 @@ if __name__=='__main__':
     #Blueprints
     app.register_blueprint(Ventacombustible.main,url_prefix='/api/ventacombustibles')
     app.register_blueprint(Ventaproducto.main,url_prefix='/api/ventaproductos')
+    
     #Error handlers
     app.register_error_handler(404, page_not_found)
     app.run()
